@@ -12,11 +12,11 @@ void setup() {
 
 /*
 
-3 bit opcode
+4 bit opcode
 
-| opcode (3 bits) |                rest (5 bits)                 |
-|      ADD        |  dest (2 bits) | source (2 bits) | 1 nonused |
-|      ADDi       |  dest (2 bits) |         imm (3 bits)        |
+| opcode (4 bits) |          rest (4 bits)           |
+|      ADD        |  dest (2 bits) | source (2 bits) |
+|      ADDi       |  dest (2 bits) |  imm (2 bits)   |
 
 opcodes:
     0 TRAP
@@ -77,28 +77,36 @@ int main() {
         //printf("%b\n", instruction);
         pc += 1;
 
-        uint8_t opcode = instruction >> 5;
+        uint8_t opcode = instruction >> 4;
         //printf("%b\n", opcode);
 
         switch (opcode) {
             case NOP:
                 break;
             case ADD:
-                uint8_t dest = get_bits(instruction, 4, 3);
-                uint8_t src = get_bits(instruction, 2, 1);
+                uint8_t dest = get_bits(instruction, 3, 2);
+                uint8_t src = get_bits(instruction, 1, 0);
                 //printf("%d %d\n", cpu.reg[dest], cpu.reg[src]);
                 cpu.reg[dest] = cpu.reg[dest] + cpu.reg[src];
                 //printf("%d %d\n", cpu.reg[dest], cpu.reg[src]);
 
                 break;
             case ADDi:
-                dest = get_bits(instruction, 4, 3);
-                src = get_bits(instruction, 2, 0);
+                dest = get_bits(instruction, 3, 2);
+                src = get_bits(instruction, 1, 0);
                 cpu.reg[dest] = cpu.reg[dest] + src;
                 
                 break;
+            case XOR:
+                dest = get_bits(instruction, 3, 2);
+                src = get_bits(instruction, 1, 0);
+                //printf("%d %d\n", cpu.reg[dest], cpu.reg[src]);
+                cpu.reg[dest] = cpu.reg[dest] ^ cpu.reg[src];
+                //printf("%d %d\n", cpu.reg[dest], cpu.reg[src]);
+
+                break;
             case TRAP:
-                uint8_t number = get_bits(instruction, 4, 0);
+                uint8_t number = get_bits(instruction, 3, 0);
                 switch (number) {
                     case 0:
                         putchar((char)cpu.reg[0]);
