@@ -1,2 +1,2 @@
 # allanas-curpas-emulator
-4 bit emulator xdxdxdlmao
+8 bit emulator xdxdxdlmao
